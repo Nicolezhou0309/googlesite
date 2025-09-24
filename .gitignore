@@ -28,6 +28,6 @@ Thumbs.db
 *.sketch
 *.zip
 
-# Large images (keep smaller ones)
-public/images/9561b58386b5f261a605fde44656ff0ce9311ed9.png
-public/images/95afa6835184f7e964de7ca5b67d6101bd94bc35.png
+# Large images - these are needed for the website
+# public/images/9561b58386b5f261a605fde44656ff0ce9311ed9.png
+# public/images/95afa6835184f7e964de7ca5b67d6101bd94bc35.png
