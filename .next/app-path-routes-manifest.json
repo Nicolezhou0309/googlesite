@@ -1,9 +1,10 @@
 {
   "/_not-found/page": "/_not-found",
-  "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml",
+  "/robots.txt/route": "/robots.txt",
   "/page": "/",
-  "/community/page": "/community",
   "/about/page": "/about",
+  "/services/page": "/services",
+  "/community/page": "/community",
   "/apartments/page": "/apartments"
 }

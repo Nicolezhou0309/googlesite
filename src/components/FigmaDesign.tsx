@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { HomeOutlined, RobotOutlined, TeamOutlined, SafetyCertificateOutlined, WechatOutlined } from '@ant-design/icons';
 import { Wrapper, Status } from '@googlemaps/react-wrapper';
-import { supabase, generateLeadId } from '../lib/supabase';
 
 // 自定义弹窗组件
 const CustomModal = ({ isOpen, onClose, title, message, type = 'success' }: {
