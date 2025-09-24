@@ -1,1 +1,33 @@
-node_modules
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large files that exceed GitHub's 100MB limit
+设计模板/
+.playwright-mcp/
+*.sketch
+*.zip
+
+# Large images (keep smaller ones)
+public/images/9561b58386b5f261a605fde44656ff0ce9311ed9.png
+public/images/95afa6835184f7e964de7ca5b67d6101bd94bc35.png
