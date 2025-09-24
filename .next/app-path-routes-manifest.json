@@ -1,10 +1,10 @@
 {
   "/_not-found/page": "/_not-found",
-  "/sitemap.xml/route": "/sitemap.xml",
   "/robots.txt/route": "/robots.txt",
-  "/page": "/",
-  "/about/page": "/about",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/apartments/page": "/apartments",
   "/services/page": "/services",
+  "/about/page": "/about",
   "/community/page": "/community",
-  "/apartments/page": "/apartments"
+  "/page": "/"
 }
