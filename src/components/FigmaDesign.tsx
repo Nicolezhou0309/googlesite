@@ -1213,7 +1213,7 @@ export default function FigmaDesign() {
                   
                   // 使用通用广告端点API插入数据
                   try {
-                    const response = await fetch('https://lead-service.vld.com.cn/api/v1/leads/ingest/generic', {
+                    const response = await fetch('https://lead-service.vld.com.cn/ads-api/leads/ingest/generic', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
