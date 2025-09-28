@@ -1,6 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import 'react-photo-view/dist/react-photo-view.css';
+
+/* 字体配置 - 使用系统字体作为后备 */
+
+/* HarmonyOS Sans SC 字体定义 */
+@font-face {
+  font-family: 'HarmonyOS Sans SC';
+  src: url('/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HarmonyOS Sans SC';
+  src: url('/fonts/HarmonyOS_Sans_SC_Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HarmonyOS Sans SC';
+  src: url('/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Custom animations */
 @keyframes accordion-down {
@@ -19,6 +45,56 @@
     to {
         height: 0;
     }
+}
+
+/* 大学标签样式 - 纯文字显示 */
+.university-label {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #2563eb !important;
+  font-family: 'HarmonyOS Sans SC', sans-serif !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 1000 !important;
+}
+
+/* 大学标签显示在图标上方 */
+.university-label-above {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #2563eb !important;
+  font-family: 'HarmonyOS Sans SC', sans-serif !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 1000 !important;
+  transform: translateY(-100%) !important;
+  margin-top: -8px !important;
+  text-shadow: 
+    -2px -2px 0 white,
+    2px -2px 0 white,
+    -2px 2px 0 white,
+    2px 2px 0 white,
+    -2px 0 0 white,
+    2px 0 0 white,
+    0 -2px 0 white,
+    0 2px 0 white !important;
+}
+
+/* PDF组件动画 */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0;
 }
 
 @keyframes layer-panel-in {
@@ -78,27 +154,18 @@
     }
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* Base styles */
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+    border-color: #e5e7eb;
+}
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
-        border-color: var(--color-gray-200, currentColor);
-    }
-
-    button:not([disabled]),
-    [role='button']:not([disabled]) {
-        cursor: pointer;
-    }
+button:not([disabled]),
+[role='button']:not([disabled]) {
+    cursor: pointer;
 }
 
 :root {
@@ -440,22 +507,6 @@
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
-@layer base {
-    * {
-        @apply border-gray-200;
-    }
-    body {
-        @apply bg-white text-gray-900;
-    }
-    ::-webkit-scrollbar {
-        @apply hidden;
-    }
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-}
 
 /* Sidebar color variables */
 :root {
@@ -470,10 +521,1093 @@
 }
 
 @layer base {
-    * {
-        @apply border-gray-200;
+    html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
     }
+    
     body {
         @apply bg-white text-gray-900;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
+    
+/* 优化滚动条样式 */
+::-webkit-scrollbar {
+    @apply hidden;
+}
+
+/* 横滑滚动条隐藏样式 */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+}
+    
+    /* 确保所有可滚动元素都有平滑滚动 */
+    * {
+        scroll-behavior: smooth;
+    }
+    
+    /* 优化固定定位元素的性能 */
+    .fixed:not(.gallery-modal-container), [style*="position: fixed"]:not(.gallery-modal-container) {
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+    
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+/* Gallery specific styles */
+.gallery-container {
+    width: 100%;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+@media (min-width: 1024px) {
+    .gallery-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.gallery-main-photo {
+    position: relative;
+    width: 100%;
+    min-width: 300px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate3d(0, 0, 0);
+    background-color: #f3f4f6;
+    will-change: transform;
+}
+
+/* 响应式高度设置 */
+.gallery-main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-main-photo {
+    aspect-ratio: 4/3; /* 小屏幕下使用固定宽高比 */
+}
+
+/* 中等屏幕 (768px+) */
+@media (min-width: 768px) {
+    .gallery-main-photo {
+        height: 100%;
+        min-height: 0;
+        aspect-ratio: unset; /* 取消宽高比限制 */
+    }
+    
+    .gallery-main-container {
+        height: 100%;
+    }
+    
+    .gallery-preview-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .gallery-preview-grid {
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        flex: 1;
+    }
+}
+
+/* 大屏幕 (1024px+) */
+@media (min-width: 1024px) {
+    .gallery-preview-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+}
+
+.gallery-main-photo:hover {
+    transform: scale(1.02) translate3d(0, 0, 0);
+}
+
+/* 最后一张图片的蒙版样式 */
+.gallery-preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 1; /* 默认显示蒙版 */
+}
+
+.gallery-preview-item:hover .gallery-preview-overlay {
+    opacity: 0.8; /* 悬浮时稍微变淡 */
+}
+
+.view-all-text {
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.25;
+    padding: 0.5rem;
+}
+
+.gallery-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gallery-preview-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.gallery-preview-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate3d(0, 0, 0);
+    background-color: #f3f4f6;
+    will-change: transform;
+}
+
+.gallery-preview-item:hover {
+    transform: scale(1.02) translate3d(0, 0, 0);
+}
+
+/* 悬浮icon和蒙版已移除 */
+
+/* icon样式已移除 */
+
+/* 最后一张图片的特殊样式 */
+.gallery-preview-item:last-child {
+    position: relative;
+}
+
+/* 悬浮icon和蒙版已移除 */
+
+/* icon样式已移除 */
+
+/* 移除自定义gallery-modal样式，使用NextUI默认样式 */
+
+.gallery-modal-content {
+    position: relative;
+    width: 100%;
+    height: 90vh;
+    max-width: 80rem;
+    max-height: 90vh;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    display: flex;
+    margin: 0;
+    transform: translateY(0);
+}
+
+.gallery-sidebar {
+    width: 16rem;
+    background-color: #f9fafb;
+    border-right: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.gallery-sidebar-hidden {
+    transform: translateX(-100%);
+    width: 0;
+    min-width: 0;
+    border-right: none;
+}
+
+@media (min-width: 1024px) {
+    .gallery-sidebar-hidden {
+        transform: translateX(0);
+        width: 16rem;
+        min-width: 16rem;
+        border-right: 1px solid #e5e7eb;
+    }
+}
+
+.gallery-sidebar-visible {
+    transform: translateX(0);
+}
+
+.gallery-folder-button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: colors 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gallery-folder-button-active {
+    background-color: rgb(246, 250, 241);
+    color: rgb(134, 167, 88);
+}
+
+.gallery-folder-button-inactive {
+    color: #374151;
+}
+
+.gallery-folder-button-inactive:hover {
+    background-color: #f3f4f6;
+}
+
+.gallery-folder-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #9ca3af;
+}
+
+.gallery-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gallery-photo-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .gallery-photo-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.gallery-photo-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate3d(0, 0, 0);
+    background-color: #f3f4f6;
+    will-change: transform;
+}
+
+.gallery-photo-item:hover {
+    transform: scale(1.02) translate3d(0, 0, 0);
+}
+
+.gallery-photo-overlay {
+    display: none;
+}
+
+.gallery-photo-icon svg {
+    width: 3rem;
+    height: 3rem;
+    color: white;
+}
+
+.gallery-loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.gallery-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 4px solid #dbeafe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.gallery-skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gallery-skeleton-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .gallery-skeleton-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.gallery-skeleton-item {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    aspect-ratio: 4/3;
+    background-color: #f3f4f6;
+    border-radius: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+/* React Photo Album Custom Styles */
+.react-photo-album--row .react-photo-album__photo {
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.react-photo-album--row .react-photo-album__photo:hover {
+    transform: scale(1.02);
+}
+
+.react-photo-album--row .react-photo-album__photo img {
+    border-radius: 8px;
+}
+
+/* Masonry Photo Album Styles */
+.react-photo-album--masonry .react-photo-album__photo {
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+.react-photo-album--masonry .react-photo-album__photo:hover {
+    transform: scale(1.02);
+}
+
+.react-photo-album--masonry .react-photo-album__photo img {
+    border-radius: 8px;
+}
+
+
+/* 图片网格增强效果 */
+.gallery-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.gallery-photo-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: #f8fafc;
+}
+
+.gallery-photo-item:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-photo-item:hover img {
+    transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .gallery-photo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+        padding: 16px 0;
+    }
+    
+    .gallery-photo-item {
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-photo-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 12px 0;
+    }
+}
+
+/* Modal样式已移除，使用NextUI默认样式 */
+
+/* 房型卡片样式 */
+.apartment-card {
+    @apply w-full bg-white overflow-hidden transition-all duration-300;
+}
+
+.apartment-card:hover {
+    transform: translateY(-2px);
+}
+
+.apartment-card.compact {
+    @apply w-full;
+}
+
+.apartment-card.detailed {
+    @apply w-full;
+}
+
+.apartment-card.default {
+    @apply w-full;
+}
+
+/* 图片容器 */
+.apartment-image-container {
+    @apply relative w-full;
+}
+
+.apartment-main-image {
+    @apply relative w-full;
+}
+
+.apartment-preview-images {
+    @apply grid grid-cols-2 gap-1;
+}
+
+.apartment-grid-images {
+    @apply grid grid-cols-3 grid-rows-2 gap-1 h-64;
+}
+
+.apartment-main-image-placeholder {
+    @apply w-full h-80 bg-gray-100 flex items-center justify-center rounded-t-lg;
+}
+
+/* 统一的图片占位符样式 */
+.image-placeholder {
+    @apply w-full h-full bg-gray-100 flex items-center justify-center;
+}
+
+.image-placeholder-content {
+    @apply text-center text-gray-400;
+}
+
+.image-placeholder-icon {
+    @apply w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2 mx-auto;
+}
+
+.image-placeholder-icon svg {
+    @apply w-6 h-6;
+}
+
+.image-placeholder-text {
+    @apply text-xs opacity-70;
+}
+
+/* 图片样式 */
+.apartment-image-container img {
+    @apply w-full h-full object-cover;
+}
+
+/* 内容区域样式已移除 - 卡片不再显示描述性文字 */
+
+/* 房型信息 */
+.apartment-info {
+    @apply grid grid-cols-2 gap-2 text-sm;
+}
+
+.apartment-info-item {
+    @apply flex flex-col space-y-1;
+}
+
+.apartment-info-label {
+    @apply text-gray-500 text-xs;
+}
+
+.apartment-info-value {
+    @apply text-gray-900 font-medium;
+}
+
+/* 特色标签 */
+.apartment-features {
+    @apply flex flex-wrap gap-1;
+}
+
+.apartment-feature-tag {
+    @apply px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full;
+}
+
+.apartment-feature-more {
+    @apply bg-gray-100 text-gray-600;
+}
+
+/* 设施标签 */
+.apartment-facilities {
+    @apply flex flex-wrap gap-1;
+}
+
+.apartment-facility-tag {
+    @apply px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full;
+}
+
+.apartment-facility-more {
+    @apply bg-gray-100 text-gray-600;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .apartment-card {
+        @apply w-full;
+    }
+    
+    .apartment-grid-images {
+        @apply grid-cols-2 grid-rows-2 h-48;
+    }
+    
+    .apartment-info {
+        @apply grid-cols-1 gap-1;
+    }
+}
+
+/* 悬停效果 - 标题样式已移除 */
+
+.apartment-card:hover .apartment-feature-tag {
+    @apply bg-blue-200;
+}
+
+.apartment-card:hover .apartment-facility-tag {
+    @apply bg-green-200;
+}
+
+/* 房型筛选器 */
+.apartment-filters {
+    @apply w-full;
+}
+
+.apartment-filter-group {
+    @apply space-y-2;
+}
+
+/* 房型统计 */
+.apartment-stats {
+    @apply w-full;
+}
+
+/* 房型卡片骨架屏 */
+.apartment-card-skeleton {
+    @apply bg-white overflow-hidden;
+}
+
+/* 房型卡片画册布局样式 */
+.apartment-gallery-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .apartment-gallery-layout {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}
+
+/* 房型卡片垂直布局样式 - 大卡在上，小卡在下 */
+.apartment-gallery-layout-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+}
+
+/* 房型卡片网格容器 - 一行两张卡片 */
+.apartment-grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .apartment-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* 确保卡片高度一致 */
+.apartment-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.apartment-card .apartment-image-container,
+.apartment-card .apartment-gallery-layout-vertical {
+    flex: 1;
+    min-height: 320px;
+}
+
+/* 房型主图样式 - 基于画册样式 */
+.apartment-main-photo {
+    position: relative;
+    width: 100%;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.apartment-main-photo:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px) translateZ(0);
+}
+
+/* 悬浮icon和蒙版已移除 */
+
+/* icon样式已移除 */
+
+/* 房型预览图网格 */
+.apartment-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .apartment-preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 房型预览图水平网格 - 用于垂直布局 */
+.apartment-preview-grid-horizontal {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+/* 房型预览图项目 */
+.apartment-preview-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.apartment-preview-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px) translateZ(0);
+}
+
+/* 悬浮icon和蒙版已移除 */
+
+/* icon样式已移除 */
+
+
+/* 滚动性能优化 */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 防止滚动卡顿的通用类 */
+.optimize-scrolling {
+  will-change: scroll-position;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 确保模态框不受父容器transform影响 */
+.optimize-scrolling .gallery-modal-container,
+.optimize-scrolling [class*="gallery-modal"] {
+  transform: none !important;
+}
+
+/* 修复可能的滚动锁定问题 */
+body.scroll-locked {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 确保模态框不会影响页面滚动 */
+.modal-open {
+  overflow: hidden;
+}
+
+/* 画廊模态框最佳实践样式 */
+.gallery-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  transform: none !important;
+  isolation: isolate !important;
+  animation: modalFadeIn 0.2s ease-out !important;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+.gallery-modal-content {
+  position: relative !important;
+  max-width: min(90vw, 1200px) !important;
+  max-height: min(90vh, 800px) !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: white !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  z-index: 10 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transform: none !important;
+  animation: modalSlideIn 0.3s ease-out !important;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .gallery-modal-overlay {
+    padding: 0.5rem !important;
+  }
+  
+  .gallery-modal-content {
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+    border-radius: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-modal-overlay {
+    padding: 0.25rem !important;
+  }
+  
+  .gallery-modal-content {
+    max-width: 98vw !important;
+    max-height: 98vh !important;
+    border-radius: 0.5rem !important;
+  }
+}
+
+/* 确保模态框不受父容器transform影响 */
+.optimize-scrolling .gallery-modal-overlay,
+.optimize-scrolling .gallery-modal-content {
+  transform: none !important;
+}
+
+/* 修复 react-photo-view lightbox 层级问题 */
+/* 确保 lightbox 显示在画廊模态框之上 */
+
+/* 主要的 PhotoView 容器 */
+.PhotoView {
+  z-index: 10000 !important;
+}
+
+.PhotoView__PhotoView {
+  z-index: 10000 !important;
+}
+
+/* PhotoView 图片容器 */
+.PhotoView__Photo {
+  z-index: 10000 !important;
+}
+
+.PhotoView__Photo img {
+  z-index: 10000 !important;
+}
+
+/* PhotoView 背景遮罩 */
+.PhotoView__Backdrop {
+  z-index: 9999 !important;
+}
+
+.PhotoView__PhotoView__Backdrop {
+  z-index: 9999 !important;
+}
+
+/* PhotoView 工具栏 */
+.PhotoView__Toolbar {
+  z-index: 10001 !important;
+}
+
+.PhotoView__PhotoView__Toolbar {
+  z-index: 10001 !important;
+}
+
+/* PhotoView 关闭按钮 */
+.PhotoView__Close {
+  z-index: 10001 !important;
+}
+
+.PhotoView__PhotoView__Close {
+  z-index: 10001 !important;
+}
+
+/* PhotoView 导航按钮 */
+.PhotoView__Prev,
+.PhotoView__Next {
+  z-index: 10001 !important;
+}
+
+.PhotoView__PhotoView__Prev,
+.PhotoView__PhotoView__Next {
+  z-index: 10001 !important;
+}
+
+/* 确保所有 PhotoView 相关元素都在正确层级 */
+[class*="PhotoView"] {
+  z-index: 10000 !important;
+}
+
+/* 特别处理工具栏和按钮 */
+[class*="PhotoView"][class*="Toolbar"],
+[class*="PhotoView"][class*="Close"],
+[class*="PhotoView"][class*="Prev"],
+[class*="PhotoView"][class*="Next"] {
+  z-index: 10001 !important;
+}
+
+/* 强制所有 lightbox 相关元素显示在最顶层 */
+.PhotoView,
+.PhotoView *,
+[class*="PhotoView"],
+[class*="PhotoView"] * {
+  z-index: 10000 !important;
+}
+
+/* 确保 lightbox 容器本身有最高优先级 */
+.PhotoView:not([class*="Toolbar"]):not([class*="Close"]):not([class*="Prev"]):not([class*="Next"]) {
+  z-index: 10000 !important;
+}
+
+/* 工具栏和按钮的最高层级 */
+.PhotoView [class*="Toolbar"],
+.PhotoView [class*="Close"],
+.PhotoView [class*="Prev"],
+.PhotoView [class*="Next"],
+[class*="PhotoView"] [class*="Toolbar"],
+[class*="PhotoView"] [class*="Close"],
+[class*="PhotoView"] [class*="Prev"],
+[class*="PhotoView"] [class*="Next"] {
+  z-index: 10001 !important;
+}
+
+/* 优化长列表滚动性能 */
+.virtual-scroll {
+  contain: layout style paint;
+  will-change: transform;
+}
+
+/* 移动端联系我们飘带样式 */
+.mobile-contact-ribbon {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #7da84c;
+  box-shadow: 0 -4px 20px rgba(125, 168, 76, 0.3);
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 80px;
+}
+
+.mobile-contact-ribbon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 -6px 25px rgba(125, 168, 76, 0.4);
+  background: #6a8f3f;
+}
+
+.mobile-contact-ribbon:active {
+  transform: translateY(0);
+}
+
+/* 确保页面内容不被飘带遮挡 */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 80px;
+  }
+}
+
+/* 中等屏幕也显示飘带，确保页面内容不被遮挡 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  body {
+    padding-bottom: 80px;
+  }
+}
+
+/* Google Maps InfoWindow 样式覆盖 */
+.gm-style-iw {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.gm-style-iw-c {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 移除InfoWindow的默认内边距和圆角 */
+.gm-style-iw-d {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 确保InfoWindow内容区域没有额外的内边距 */
+.gm-style-iw-t {
+  border-radius: 0 !important;
+}
+
+/* 移除InfoWindow顶部容器的padding */
+.gm-style-iw-ch {
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 隐藏InfoWindow的关闭按钮 */
+.gm-style-iw-tc {
+  display: none !important;
+}
+
+/* 隐藏InfoWindow的关闭按钮图标 */
+.gm-style-iw-tc::after {
+  display: none !important;
+}
+
+/* 隐藏InfoWindow的header容器 */
+.gm-style-iw-chr {
+  display: none !important;
+}
+
+/* 隐藏InfoWindow的关闭按钮元素 */
+.gm-style-iw-chr button {
+  display: none !important;
+}
+
+/* 隐藏所有带gm-ui-hover-effect类的按钮 */
+.gm-ui-hover-effect {
+  display: none !important;
+}
+
+/* 移除InfoWindow顶部区域的padding */
+.gm-style-iw-tc + .gm-style-iw-t {
+  padding-top: 0 !important;
+}
+
+/* 确保所有InfoWindow相关元素都没有顶部padding */
+.gm-style-iw > * {
+  padding-top: 0 !important;
+}
+
+/* 完全移除InfoWindow header区域的高度 */
+.gm-style-iw-chr {
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 移除关闭按钮的所有尺寸 */
+.gm-style-iw-chr button,
+.gm-ui-hover-effect {
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
 }

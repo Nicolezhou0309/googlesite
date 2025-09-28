@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 // @ts-ignore
 import OSS from 'ali-oss'
+import { getFolderDisplayName } from '@/lib/folderTranslations'
 
 // OSS配置
 const ossConfig = {
@@ -78,6 +79,8 @@ async function getCommunityImages(communityId: string, specificFolder?: string) 
   if (specificFolder) {
     console.log('获取指定文件夹图片:', specificFolder)
     
+    // 不再忽略缩略图文件夹，允许访问所有文件夹
+    
     // 构建完整的OSS路径
     let fullPath: string
     if (specificFolder.startsWith('户型图/')) {
@@ -95,10 +98,10 @@ async function getCommunityImages(communityId: string, specificFolder?: string) 
     return await getImagesFromPath(fullPath)
   }
   
-  // 否则获取所有图片（用于文件夹列表）
+  // 否则获取所有图片（用于文件夹列表）- 包含所有文件夹
   const allImages = []
   
-  // 并行获取所有类型的图片
+  // 并行获取所有类型的图片（包括缩略图）
   const [publicAreaImages, facadeImages, layoutImages, thumbnailImages] = await Promise.all([
     getImagesFromPath(`public/images/communities/${communityId}/公区/`),
     getImagesFromPath(`public/images/communities/${communityId}/外立面/`),
@@ -140,6 +143,7 @@ export async function GET(request: NextRequest) {
     const folder = searchParams.get('folder')
     const page = parseInt(searchParams.get('page') || '0')
     const limit = parseInt(searchParams.get('limit') || '50')
+    const language = (searchParams.get('language') || 'zh') as 'zh' | 'en'
     
     if (!communityId) {
       return NextResponse.json({ error: '缺少communityId参数' }, { status: 400 })
@@ -165,6 +169,17 @@ export async function GET(request: NextRequest) {
     // 按文件夹分组
     const groupedImages = groupImagesByFolder(filteredImages)
     
+    // 包含所有文件夹，不再过滤缩略图文件夹
+    const filteredFolderCounts = Object.keys(groupedImages)
+      .map((folderPath: string) => {
+        const folderName = folderPath.split('/').pop() || folderPath
+        return {
+          path: folderPath,
+          count: groupedImages[folderPath].length,
+          displayName: getFolderDisplayName(folderName, language)
+        }
+      })
+    
     return NextResponse.json({
       images: paginatedImages,
       total: filteredImages.length,
@@ -172,11 +187,7 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       groupedByFolder: groupedImages,
-      folderCounts: Object.keys(groupedImages).map((folderPath: string) => ({
-        path: folderPath,
-        count: groupedImages[folderPath].length,
-        displayName: folderPath.split('/').pop() || folderPath
-      }))
+      folderCounts: filteredFolderCounts
     })
   } catch (error) {
     console.error('API错误:', error)

@@ -1,8 +1,16 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
+import ApartmentCardGrid from '@/components/ApartmentCardGrid'
 
 export default function Apartments() {
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
   const apartmentTypes = [
     {
       name: '单间公寓',
@@ -28,9 +36,13 @@ export default function Apartments() {
   ]
 
   return (
-    <main className="min-h-screen">
+    <main>
       <Navigation />
-      <div className="pt-16">
+      <div className={`pt-[70px] transition-all duration-700 ease-out ${
+        isLoaded 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 translate-y-8'
+      }`}>
         <section className="py-20 bg-gradient-to-br from-primary-50 to-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -44,8 +56,59 @@ export default function Apartments() {
           </div>
         </section>
 
+        {/* 房型卡片展示区域 */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <div className="flex items-center justify-center mb-4">
+                {/* 左侧装饰图标 - 优雅的叶子图案 */}
+                <div className="flex items-center mr-6">
+                  <svg className="w-10 h-10 text-[#7DA84C] opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2c-3 2-5 6-5 10 0 5.5 4.5 10 10 10s10-4.5 10-10c0-4-2-8-5-10"/>
+                    <path d="M12 2c3 2 5 6 5 10 0 5.5-4.5 10-10 10S-3 17.5-3 12c0-4 2-8 5-10"/>
+                  </svg>
+                  <div className="ml-2 flex flex-col space-y-1">
+                    <div className="w-2 h-2 bg-[#7DA84C] rounded-full opacity-60"></div>
+                    <div className="w-3 h-2 bg-[#7DA84C] rounded-full opacity-40"></div>
+                  </div>
+                </div>
+                
+                {/* 标题 */}
+                <h2 className="text-3xl font-bold text-gray-900 relative">
+                  精选房型
+                  {/* 标题下方装饰线 */}
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#7DA84C] to-transparent"></div>
+                </h2>
+                
+                {/* 右侧装饰图标 - 镜像叶子图案 */}
+                <div className="flex items-center ml-6">
+                  <div className="mr-2 flex flex-col space-y-1">
+                    <div className="w-3 h-2 bg-[#7DA84C] rounded-full opacity-40"></div>
+                    <div className="w-2 h-2 bg-[#7DA84C] rounded-full opacity-60"></div>
+                  </div>
+                  <svg className="w-10 h-10 text-[#7DA84C] opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2c-3 2-5 6-5 10 0 5.5 4.5 10 10 10s10-4.5 10-10c0-4-2-8-5-10"/>
+                    <path d="M12 2c3 2 5 6 5 10 0 5.5-4.5 10-10 10S-3 17.5-3 12c0-4 2-8 5-10"/>
+                  </svg>
+                </div>
+              </div>
+              <p className="text-xl text-gray-600">从功能到美学，为你呈现无需妥协的理想家</p>
+            </div>
+            <ApartmentCardGrid 
+              variant="detailed"
+              imageLayout="one-drag-two"
+              maxItems={12}
+            />
+          </div>
+        </section>
+
+        {/* 原有房型介绍区域 */}
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">房型概览</h2>
+              <p className="text-xl text-gray-600">多种房型选择，满足不同居住需求</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {apartmentTypes.map((apartment, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
@@ -109,7 +172,6 @@ export default function Apartments() {
           </div>
         </section>
       </div>
-      <Footer />
     </main>
   )
 }

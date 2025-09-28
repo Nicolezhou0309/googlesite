@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://go.vlinker.com.cb/sitemap.xml',
+    sitemap: 'https://go.vlinker.com.cn/sitemap.xml',
   }
 }
